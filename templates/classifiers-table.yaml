@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: DynamoDB table for storing classifier metadata
+
+Resources:
+  ClassifiersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Classifiers
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: classifierId
+          AttributeType: S
+        - AttributeName: sessionId
+          AttributeType: N
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: uploadDate
+          AttributeType: S
+      KeySchema:
+        - AttributeName: classifierId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: SessionIndex
+          KeySchema:
+            - AttributeName: sessionId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+        - IndexName: UserUploadDateIndex
+          KeySchema:
+            - AttributeName: userId
+              KeyType: HASH
+            - AttributeName: uploadDate
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
